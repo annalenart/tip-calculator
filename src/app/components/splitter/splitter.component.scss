@@ -1,0 +1,17 @@
+@import "src/colors";
+
+:host {
+  display: grid;
+  grid-gap: 20px;
+  background-color: $white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px 0 rgba(0, 0, 0, 0.2);
+  margin: 50px auto 0;
+  width: 100%;
+  max-width: 600px;
+
+  @media(min-width: 1000px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

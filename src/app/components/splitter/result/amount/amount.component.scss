@@ -1,0 +1,32 @@
+@import "src/colors";
+
+:host {
+  color: $white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &:not(:first-of-type) {
+    margin-top: 10px;
+  }
+}
+
+.title {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+
+  &:after {
+    content: "/ person";
+    font-size: 10px;
+    color: $titles;
+    opacity: 0.7;
+    font-weight: 700;
+  }
+}
+
+.amount {
+  font-size: 30px;
+  font-weight: 700;
+  color: $light-green;
+}

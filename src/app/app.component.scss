@@ -1,0 +1,15 @@
+@import "src/colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: $light-blue;
+  height: 100%;
+}
+
+.title {
+  font-weight: 700;
+  color: $dark-green;
+}

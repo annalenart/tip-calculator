@@ -1,0 +1,3 @@
+<app-amount [amount]="tipAmount" title="Tip Amount"></app-amount>
+<app-amount [amount]="total" title="Total"></app-amount>
+<button class="reset-btn" (click)="reset()" [disabled]="!tipAmount && !total">RESET</button>
