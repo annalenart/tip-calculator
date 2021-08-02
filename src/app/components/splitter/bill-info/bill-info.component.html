@@ -1,43 +1,55 @@
-<div class="input-wrapper">
-  <label class="title" for="bill">Bill</label>
-  <div class="input-container">
-    <span class="icon">$</span>
-    <input
-        placeholder="0"
-        class="input"
-        id="bill"
-        type="text"
-        inputmode="numeric"
-        (keyup)="updateBillData('bill', billInput.value)"
-        #billInput>
+<form class="form-container" [formGroup]="form">
+
+  <div class="container">
+    <label class="title" for="bill">Bill</label>
+    <ng-container [ngTemplateOutlet]="errorTmpl" [ngTemplateOutletContext]="{$implicit: form.controls.bill}">
+    </ng-container>
+    <div class="input-wrapper">
+      <span class="icon">$</span>
+      <input
+          formControlName="bill"
+          placeholder="0"
+          class="input"
+          id="bill"
+          type="text"
+          inputmode="numeric"
+          #billInput>
+    </div>
   </div>
-</div>
-<div class="select-tip-wrapper">
-  <span class="title">Select Tip %</span>
-  <div class="tips-wrapper">
-    <span class="tip" [class.active]="billData.tip === tip.tipAmount && !isCustom" *ngFor="let tip of tips"
-          (click)="updateBillData('tip', tip.tipAmount); isCustom = false">{{tip.displayTip}}%</span>
-    <span class="tip custom" *ngIf="!isCustom; else customize" (click)="toggle()">Custom</span>
-    <ng-template #customize>
-      <span [class.active]="isCustom" class="tip custom-tip-wrapper" (click)="toggle()">
-        <input class="custom-tip-input" type="text" inputmode="numeric" (click)="$event.stopPropagation()"
-               (keyup)="updateBillData('tip', +tipInput.value/100)" #tipInput>
-      </span>
-    </ng-template>
+  <div class="select-tip-wrapper">
+    <span class="title">Select Tip %</span>
+    <div class="tips-wrapper">
+      <span class="tip" [class.active]="this.form.controls.tip.value === tip.tipAmount && !isCustom" *ngFor="let tip of tips"
+            (click)="updateTip(tip.tipAmount); isCustom = false">{{tip.displayTip}}%</span>
+      <span class="tip custom" *ngIf="!isCustom; else customize" (click)="toggle()">Custom</span>
+      <ng-template #customize>
+        <span [class.active-custom]="isCustom" class="tip custom-tip-wrapper" (click)="toggle()">
+          <input class="custom-tip-input" type="text" inputmode="numeric" (click)="$event.stopPropagation()"
+                 (keyup)="updateTip(+tipInput.value/100)" #tipInput>
+        </span>
+      </ng-template>
+    </div>
   </div>
-</div>
-<div class="input-wrapper">
-  <label class="title" for="people">Number od People</label>
-  <div class="input-container">
-    <img class="person" src="/assets/images/person_black_18dp.svg" alt="person">
-    <input
-        placeholder="0"
-        class="input"
-        id="people"
-        type="text"
-        inputmode="numeric"
-        (keyup)="updateBillData('people', peopleInput.value)"
-        #peopleInput>
+  <div class="container">
+    <label class="title" for="people">Number od People</label>
+    <ng-container [ngTemplateOutlet]="errorTmpl" [ngTemplateOutletContext]="{$implicit: form.controls.people}">
+    </ng-container>
+    <div class="input-wrapper">
+      <img class="person" src="/assets/images/person_black_18dp.svg" alt="person">
+      <input
+          formControlName="people"
+          placeholder="0"
+          class="input"
+          id="people"
+          type="text"
+          inputmode="numeric"
+          #peopleInput>
+    </div>
   </div>
-</div>
+</form>
+
+<ng-template let-control #errorTmpl>
+  <span class="invalid-text" *ngIf="control.errors?.forbiddenZero && control.dirty">Can't be zero</span>
+  <span class="invalid-text" *ngIf="control.errors?.forbiddenNegative">Can't be negative</span>
+</ng-template>
 

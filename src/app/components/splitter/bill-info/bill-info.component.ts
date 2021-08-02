@@ -1,5 +1,6 @@
-import { ElementRef, EventEmitter, ViewChild } from '@angular/core';
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { BillData } from '../splitter.component';
 
 interface TipData {
@@ -12,7 +13,7 @@ interface TipData {
   templateUrl: './bill-info.component.html',
   styleUrls: ['./bill-info.component.scss']
 })
-export class BillInfoComponent implements OnInit {
+export class BillInfoComponent implements OnInit, OnDestroy {
   private static readonly PREDEFINED_TIPS = [
     {displayTip: '5', tipAmount: 0.05},
     {displayTip: '10', tipAmount: 0.1},
@@ -25,36 +26,49 @@ export class BillInfoComponent implements OnInit {
   @ViewChild('billInput') billInput: ElementRef;
   @ViewChild('peopleInput') peopleInput: ElementRef;
 
-  billData: BillData = {
-    bill: 0,
-    tip: 0,
-    people: 0
-  } as BillData;
+  form: FormGroup;
+  formSub: Subscription;
 
   isCustom = false;
   tips: Array<TipData>;
 
   ngOnInit(): void {
     this.tips = BillInfoComponent.PREDEFINED_TIPS;
+    this.form = new FormGroup({
+      bill: new FormControl(null, [Validators.required, BillInfoComponent.range()]),
+      people: new FormControl(null, [Validators.required, BillInfoComponent.range()]),
+      tip: new FormControl(null, Validators.required)
+    });
+    this.formSub = this.form.valueChanges.subscribe((billData: BillData) => {
+      this.form.valid && this.billDataChanged.emit(billData);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.formSub && this.formSub.unsubscribe();
   }
 
   toggle() {
     this.isCustom = !this.isCustom;
   }
 
-  updateBillData(billElement: keyof BillData, amount: string | number): void {
-    this.billData[billElement] = +amount;
-    this.billData.bill && this.billData.tip && this.billData.people && this.billDataChanged.emit(this.billData);
+  updateTip(amount: number): void {
+    this.form.controls.tip.setValue(amount);
   }
 
   reset(): void {
-    Object.keys(this.billData).forEach((key: string) => {
-      this.billData[key as keyof BillData] = 0;
-    });
-    this.billDataChanged.emit(this.billData);
-    this.billInput.nativeElement.value = '';
-    this.peopleInput.nativeElement.value = '';
+    this.form.reset();
     this.isCustom = false;
   }
 
+  private static range(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (+control.value === 0) {
+        return {'forbiddenZero': true};
+      } else if (+control.value < 0) {
+        return {'forbiddenNegative': true};
+      }
+      return null;
+    };
+  }
 }
