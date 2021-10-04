@@ -12,5 +12,7 @@ export class ResultComponent {
 
   reset() {
     this.resetTriggered.emit();
+    this.tipAmount = 0;
+    this.total = 0;
   }
 }

@@ -19,13 +19,8 @@ export class SplitterComponent {
   total: number;
 
   billDataChanged(billData: BillData) {
-    if (!billData.bill && !billData.tip && !billData.people) {
-      this.tipAmount = 0;
-      this.total = 0;
-    } else {
-      this.tipAmount = +((billData.bill / billData.people) * billData.tip).toFixed(2);
-      this.total = +(billData.bill / billData.people + this.tipAmount).toFixed(2);
-    }
+    this.tipAmount = +((billData.bill / billData.people) * billData.tip).toFixed(2);
+    this.total = +(billData.bill / billData.people + this.tipAmount).toFixed(2);
   }
 
   onReset() {

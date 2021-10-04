@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { BillData } from '../splitter.component';
 
 interface TipData {
-  displayTip: string;
   tipAmount: number;
 }
 
@@ -15,11 +14,11 @@ interface TipData {
 })
 export class BillInfoComponent implements OnInit, OnDestroy {
   private static readonly PREDEFINED_TIPS = [
-    {displayTip: '5', tipAmount: 0.05},
-    {displayTip: '10', tipAmount: 0.1},
-    {displayTip: '15', tipAmount: 0.15},
-    {displayTip: '25', tipAmount: 0.25},
-    {displayTip: '50', tipAmount: 0.5}
+    {tipAmount: 5},
+    {tipAmount: 10},
+    {tipAmount: 15},
+    {tipAmount: 25},
+    {tipAmount: 50}
   ];
 
   @Output() billDataChanged = new EventEmitter<BillData>();
@@ -40,6 +39,7 @@ export class BillInfoComponent implements OnInit, OnDestroy {
       tip: new FormControl(null, Validators.required)
     });
     this.formSub = this.form.valueChanges.subscribe((billData: BillData) => {
+      billData.tip = this.form.controls.tip.value/100;
       this.form.valid && this.billDataChanged.emit(billData);
     });
   }
@@ -50,6 +50,7 @@ export class BillInfoComponent implements OnInit, OnDestroy {
 
   toggle() {
     this.isCustom = !this.isCustom;
+    this.isCustom && this.form.controls.tip.setValue(null)
   }
 
   updateTip(amount: number): void {

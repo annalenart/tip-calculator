@@ -16,23 +16,26 @@
           #billInput>
     </div>
   </div>
+
   <div class="select-tip-wrapper">
     <span class="title">Select Tip %</span>
     <div class="tips-wrapper">
       <span class="tip" [class.active]="this.form.controls.tip.value === tip.tipAmount && !isCustom" *ngFor="let tip of tips"
-            (click)="updateTip(tip.tipAmount); isCustom = false">{{tip.displayTip}}%</span>
+            (click)="updateTip(tip.tipAmount); isCustom = false">{{tip.tipAmount}}%</span>
       <span class="tip custom" *ngIf="!isCustom; else customize" (click)="toggle()">Custom</span>
       <ng-template #customize>
         <span [class.active-custom]="isCustom" class="tip custom-tip-wrapper" (click)="toggle()">
           <input class="custom-tip-input" type="text" inputmode="numeric" (click)="$event.stopPropagation()"
-                 (keyup)="updateTip(+tipInput.value/100)" #tipInput>
+                 formControlName="tip">
         </span>
       </ng-template>
     </div>
   </div>
+
   <div class="container">
     <label class="title" for="people">Number od People</label>
-    <ng-container [ngTemplateOutlet]="errorTmpl" [ngTemplateOutletContext]="{$implicit: form.controls.people}">
+    <ng-container [ngTemplateOutlet]="errorTmpl" [ngTemplateOutletContext]="{$implicit: form.controls.people
+    }">
     </ng-container>
     <div class="input-wrapper">
       <img class="person" src="/assets/images/person_black_18dp.svg" alt="person">
@@ -46,6 +49,7 @@
           #peopleInput>
     </div>
   </div>
+
 </form>
 
 <ng-template let-control #errorTmpl>
